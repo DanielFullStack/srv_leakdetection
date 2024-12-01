@@ -1,0 +1,22 @@
+<configuration>
+    <!-- Define o padrão para o formato de log -->
+    <property name="LOG_PATTERN"
+        value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
+
+    <!-- Configuração do Console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger para a aplicação -->
+    <logger name="com.aguas.srv_leakdetection" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

@@ -1,0 +1,26 @@
+services:
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - proxynet
+
+  srv_leakdetection:
+    build:
+      context: .
+    image: srv_leakdetection:latest
+    container_name: srv_leakdetection
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - redis
+    networks:
+      - proxynet
+
+networks:
+  proxynet:
+    name: aguas_network
