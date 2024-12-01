@@ -1,11 +1,11 @@
 services:
   redis:
-    image: redis
+    image: redis:latest
     container_name: redis
     ports:
       - "6379:6379"
     networks:
-      - proxynet
+      - my-proxy-net
 
   srv_leakdetection:
     build:
@@ -19,8 +19,9 @@ services:
     depends_on:
       - redis
     networks:
-      - proxynet
+      - my-proxy-net
 
 networks:
-  proxynet:
+  my-proxy-net:
     name: aguas_network
+    external: true
