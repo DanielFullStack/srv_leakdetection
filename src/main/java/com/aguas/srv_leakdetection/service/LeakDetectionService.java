@@ -31,9 +31,6 @@ public class LeakDetectionService {
     public void processPressureReading(PressureReading reading) {
         log.info("Processing pressure reading for sensor {}: {} mca", reading.getSensorId(), reading.getPressure());
 
-        repository.save(reading);
-        log.debug("Saved pressure reading for sensor {} to database", reading.getSensorId());
-
         String redisKey = REDIS_KEY_PREFIX + reading.getSensorId();
         Double lastPressure = (Double) redisService.get(redisKey);
 
@@ -44,6 +41,9 @@ public class LeakDetectionService {
             log.debug("Calculated pressure variation for sensor {}: {} mca", reading.getSensorId(), variation);
 
             if (variation > THRESHOLD) {
+                repository.save(reading);
+                log.debug("Saved pressure reading for sensor {} to database", reading.getSensorId());
+
                 log.warn("Leak detected for sensor {}: variation = {} mca", reading.getSensorId(), variation);
                 kafkaTemplate.send(ALERT_TOPIC, reading.getSensorId(), reading);
                 log.info("Alert sent to Kafka topic {} for sensor {}", ALERT_TOPIC, reading.getSensorId());
