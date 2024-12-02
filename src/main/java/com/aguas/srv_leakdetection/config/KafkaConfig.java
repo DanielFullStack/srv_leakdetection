@@ -13,10 +13,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.listener.DefaultErrorHandler;
-import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import com.aguas.srv_leakdetection.model.PressureReading;
 
@@ -28,19 +25,19 @@ import java.util.Map;
 public class KafkaConfig {
 
     @Bean
-    public ProducerFactory<String, PressureReading> producerFactory() {
+    public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092"); // Servidor Kafka
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class); // Serialização da chave
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class); // Serialização do valor
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, PressureReading> kafkaTemplate() {
+    public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
-    
+
     @Bean
     public ConsumerFactory<String, PressureReading> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -64,14 +61,6 @@ public class KafkaConfig {
     public ConcurrentKafkaListenerContainerFactory<String, PressureReading> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, PressureReading> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-
-        // Configurando o ErrorHandler com backoff exponencial
-        ExponentialBackOffWithMaxRetries backOff = new ExponentialBackOffWithMaxRetries(5); // Tenta 5 vezes
-        backOff.setInitialInterval(500L); // Intervalo inicial: 500ms
-        backOff.setMultiplier(2.0); // Dobra o tempo a cada tentativa
-        backOff.setMaxInterval(5000L); // Máximo de 5 segundos entre tentativas
-
-        factory.setCommonErrorHandler(new DefaultErrorHandler(backOff));
         return factory;
     }
 }

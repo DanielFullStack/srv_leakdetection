@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.aguas.srv_leakdetection.model.PressureReading;
-
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -16,9 +14,9 @@ public class RedisService {
     private static final Logger log = LoggerFactory.getLogger(RedisService.class);
 
     @Autowired
-    private RedisTemplate<String, PressureReading> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public void save(String key, PressureReading value, long timeout, TimeUnit unit) {
+    public void save(String key, Object value, long timeout, TimeUnit unit) {
         log.info("Saving key: {} with timeout: {} {}", key, timeout, unit);
         redisTemplate.opsForValue().set(key, value, timeout, unit);
         log.debug("Successfully saved key: {}", key);
