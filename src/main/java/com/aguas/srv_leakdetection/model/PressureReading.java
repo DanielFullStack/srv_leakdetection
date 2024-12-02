@@ -1,5 +1,6 @@
 package com.aguas.srv_leakdetection.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -16,7 +17,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PressureReading {
+public class PressureReading implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
