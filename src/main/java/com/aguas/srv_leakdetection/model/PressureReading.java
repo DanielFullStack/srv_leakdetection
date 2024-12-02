@@ -22,5 +22,6 @@ public class PressureReading {
     private Long id;
     private String sensorId;
     private double pressure;
+    private double variation;
     private LocalDateTime readingDateTime;
 }

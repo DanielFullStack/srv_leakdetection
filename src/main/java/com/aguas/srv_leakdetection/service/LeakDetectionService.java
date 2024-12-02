@@ -41,6 +41,7 @@ public class LeakDetectionService {
             log.debug("Calculated pressure variation for sensor {}: {} mca", reading.getSensorId(), variation);
 
             if (variation > THRESHOLD) {
+                reading.setVariation(variation);
                 repository.save(reading);
                 log.debug("Saved pressure reading for sensor {} to database", reading.getSensorId());
 
