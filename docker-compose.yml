@@ -5,7 +5,8 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - my-proxy-net
+      my-proxy-net:
+        ipv4_address: 172.18.0.9
 
   srv_leakdetection:
     build:
@@ -19,9 +20,13 @@ services:
     depends_on:
       - redis
     networks:
-      - my-proxy-net
+      my-proxy-net:
+        ipv4_address: 172.18.0.10
 
 networks:
   my-proxy-net:
     name: aguas_network
     external: true
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
