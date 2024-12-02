@@ -1,6 +1,6 @@
 package com.aguas.srv_leakdetection.service;
 
-import com.aguas.srv_leakdetection.model.PressureReading;
+import com.aguas.srv_leakdetection.model.LeakDetection;
 import com.aguas.srv_leakdetection.repository.PressureReadingRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +40,7 @@ public class LeakDetectionService {
         this.objectMapper.registerModule(new JavaTimeModule());
     }
 
-    public void processPressureReading(PressureReading reading) {
+    public void processPressureReading(LeakDetection reading) {
         log.info("Processing pressure reading for sensor {}: {} mca", reading.getSensorId(), reading.getPressure());
 
         String redisKey = REDIS_KEY_PREFIX + reading.getSensorId();
@@ -76,7 +76,7 @@ public class LeakDetectionService {
     }
 
     @Transactional
-    public void updatePressureReading(PressureReading reading) {
+    public void updatePressureReading(LeakDetection reading) {
         int retryCount = 3;
         while (retryCount > 0) {
             try {
