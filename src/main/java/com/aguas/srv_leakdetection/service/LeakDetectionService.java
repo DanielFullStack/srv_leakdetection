@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -27,17 +26,15 @@ public class LeakDetectionService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final RedisService redisService;
+    private final PressureReadingRepository repository;
 
-    @Autowired
-    private RedisService redisService;
-
-    @Autowired
-    private PressureReadingRepository repository;
-
-    public LeakDetectionService(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
+    public LeakDetectionService(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper, RedisService redisService, PressureReadingRepository repository) {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.redisService = redisService;
+        this.repository = repository;
     }
 
     public void processPressureReading(LeakDetection reading) {
